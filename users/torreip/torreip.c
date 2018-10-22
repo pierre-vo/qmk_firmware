@@ -1,8 +1,11 @@
 #include "torreip.h"
 #include "version.h"
 #include "eeprom.h"
-#include "tap_dances.h"
 #include "rgb_stuff.h"
+
+#define LONGPRESS_DELAY 150
+#define LAYER_TOGGLE_DELAY 300
+#define LAYER_SKIP_DELAY 1000
 
 userspace_config_t userspace_config;
 
@@ -112,6 +115,7 @@ void startup_user (void) {
 }
 
 void shutdown_user (void) {
+
 #ifdef RGBLIGHT_ENABLE
   rgblight_enable_noeeprom();
   rgblight_mode_noeeprom(1);
@@ -147,10 +151,6 @@ void matrix_scan_user(void) {
     startup_user();
   }
 
-#ifdef TAP_DANCE_ENABLE  // Run Diablo 3 macro checking code.
-  run_diablo_macro_check();
-#endif // TAP_DANCE_ENABLE
-
 #ifdef RGBLIGHT_ENABLE
   matrix_scan_rgb();
 #endif // RGBLIGHT_ENABLE
@@ -160,6 +160,9 @@ void matrix_scan_user(void) {
 
 
 
+static uint16_t key_timer;
+static bool singular_key = false;
+//static uint8_t skip = false;  /* if true: we do not restore the RGB state */
 
 // Defines actions tor my global custom keycodes. Defined in drashna.h file
 // Then runs the _keymap's record handier if not processed here
@@ -181,6 +184,49 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     }
     return false;
     break;
+
+    case LOWER:
+      if (record->event.pressed) {
+        key_timer = timer_read();
+        singular_key = true;
+        layer_on(_LOWER);
+
+      } else if (timer_elapsed(key_timer) < LAYER_TOGGLE_DELAY
+                 || timer_elapsed(key_timer) > LAYER_SKIP_DELAY
+                 || !singular_key) {
+        layer_off(_LOWER);
+      }
+
+      return false;
+      break;
+
+    case RAISE:
+      if (record->event.pressed) {
+        key_timer = timer_read();
+        singular_key = true;
+        layer_on(_RAISE);
+
+      } else if (timer_elapsed(key_timer) < LAYER_TOGGLE_DELAY
+                 || timer_elapsed(key_timer) > LAYER_SKIP_DELAY
+                 || !singular_key) {
+        layer_off(_RAISE);
+      }
+
+      return false;
+      break;
+
+    case _FUNCTION:
+      if (record->event.pressed) {
+        key_timer = timer_read();
+        singular_key = true;
+        layer_on(_FUNCTION);
+
+       } else if (timer_elapsed(key_timer) < LAYER_TOGGLE_DELAY
+                 || timer_elapsed(key_timer) > LAYER_SKIP_DELAY
+                 || !singular_key) {
+        layer_off(_FUNCTION);
+      }
+
 
   case KC_MAKE:  // Compiles the firmware, and adds the flash command based on keyboard bootloader
     if (!record->event.pressed) {
@@ -210,6 +256,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
   case KC_RESET: // Custom RESET code that sets RGBLights to RED
     if (!record->event.pressed) {
+
 #ifdef RGBLIGHT_ENABLE
       rgblight_enable_noeeprom();
       rgblight_mode_noeeprom(1);
@@ -246,6 +293,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       return false;
       break;
 
+    /* If any other key was pressed during the layer mod hold period,
+     * then the layer mod was used momentarily, and should block latching */
+    default:
+      singular_key = false;
+      break;
   }
   return process_record_keymap(keycode, record) &&
 #ifdef RGBLIGHT_ENABLE

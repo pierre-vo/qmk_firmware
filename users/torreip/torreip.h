@@ -12,17 +12,14 @@
 enum userspace_layers {
   _QWERTY = 0,
   _NUMLOCK = 0,
-  _COLEMAK,
-  _DVORAK,
-  _WORKMAN,
   _MODS,
   _GAMEPAD,
-  _DIABLO,
   _MACROS,
   _MEDIA,
   _LOWER,
   _RAISE,
   _ADJUST,
+  _FUNCTION,
 };
 
 /*
@@ -146,16 +143,6 @@ enum userspace_custom_keycodes {
 #define ALT_APP ALT_T(KC_APP)
 
 #define MG_NKRO MAGIC_TOGGLE_NKRO
-
-
-#ifdef TAP_DANCE_ENABLE
-enum {
-  TD_D3_1 = 0,
-  TD_D3_2,
-  TD_D3_3,
-  TD_D3_4
-};
-#endif // TAP_DANCE_ENABLE
 
 
 
