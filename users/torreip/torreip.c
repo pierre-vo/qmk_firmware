@@ -226,7 +226,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                  || !singular_key) {
         layer_off(_FUNCTION);
       }
-
+	return false;
+	break;
 
   case KC_MAKE:  // Compiles the firmware, and adds the flash command based on keyboard bootloader
     if (!record->event.pressed) {
