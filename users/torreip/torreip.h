@@ -68,22 +68,6 @@ enum userspace_custom_keycodes
   VRSN,              // Prints QMK Firmware and board info
   KMAP,
   KC_QWERTY,         // Sets default layer to QWERTY
-  KC_COLEMAK,        // Sets default layer to COLEMAK
-  KC_DVORAK,         // Sets default layer to DVORAK
-  KC_WORKMAN,        // Sets default layer to WORKMAN
-  KC_DIABLO_CLEAR,   // Clears all Diablo Timers
-  KC_OVERWATCH,      // Toggles game macro input mode (so in OW, it defaults to game chat)
-  KC_SALT,           // See drashna.c for details
-  KC_MORESALT,
-  KC_SALTHARD,
-  KC_GOODGAME,
-  KC_SYMM,
-  KC_JUSTGAME,
-  KC_GLHF,
-  KC_TORB,
-  KC_AIM,
-  KC_C9,
-  KC_GGEZ,
   KC_MAKE,           // Run keyboard's customized make command
   KC_RESET,          // Resets keyboard, with red underglow
   KC_RGB_T,          // Toggles RGB Layer Indication mode
@@ -92,8 +76,6 @@ enum userspace_custom_keycodes
   KC_SECRET_3,       // test3
   KC_SECRET_4,       // test4
   KC_SECRET_5,       // test5
-  KC_CCCV,           // Hold to copy, tap to paste
-  KC_NUKE,           // NUCLEAR LAUNCH DETECTED!!!
 
 #ifdef UNICODE_ENABLE
   UC_FLIP,           // Table flip
@@ -105,8 +87,9 @@ enum userspace_custom_keycodes
 #define LOWER MO(_LOWER)
 #define RAISE MO(_RAISE)
 #define ADJUST MO(_ADJUST)
-#define TG_MODS TG(_MODS)
-#define TG_GAME TG(_GAMEPAD)
+#define FUNCTION MO(_FUNCTION)
+//#define TG_MODS TG(_MODS)
+//#define TG_GAME TG(_GAMEPAD)
 
 #define KC_SEC1 KC_SECRET_1
 #define KC_SEC2 KC_SECRET_2
@@ -115,11 +98,8 @@ enum userspace_custom_keycodes
 #define KC_SEC5 KC_SECRET_5
 
 #define QWERTY KC_QWERTY
-#define DVORAK KC_DVORAK
-#define COLEMAK KC_COLEMAK
-#define WORKMAN KC_WORKMAN
 
-#define KC_RESET RESET
+//#define KC_RESET RESET
 #define KC_RST KC_RESET
 
 #ifdef SWAP_HANDS_ENABLE
