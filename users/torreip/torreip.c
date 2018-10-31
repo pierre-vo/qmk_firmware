@@ -350,7 +350,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
     case KMAP:
       if (record->event.pressed)
       {
-        SEND_STRING("http://www.keyboard-layout-editor.com/#/gists/0e924c013c75d1dc4bbf51806b5500ee");
+#if defined(KEYBOARD_lets_split_eh_eh)
+    	  send_string_with_delay("http://www.keyboard-layout-editor.com/#/gists/7cdd2e5ef3b328117a56f3edff59906b", 10);
+#elif defined(KEYBOARD_ergodox_infinity)
+    	  send_string_with_delay("http://www.keyboard-layout-editor.com/#/gists/9dd2c2bd6f1120685ee810303563c7f5", 10);
+#elif defined(KEYBOARD_xd75)
+    	  send_string_with_delay("http://www.keyboard-layout-editor.com/#/gists/0e924c013c75d1dc4bbf51806b5500ee", 10);
+#else
+    	  send_string_with_delay("http://www.keyboard-layout-editor.com/", 10);
+#endif /* KEYBOARD */
       }
 
       return false;
