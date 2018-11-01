@@ -23,7 +23,7 @@ RGBLIGHT_ENABLE = no        # Enable WS2812 RGB underlight.  Do not enable this 
 SLEEP_LED_ENABLE = no       # Breathing sleep LED during USB suspend
 TAP_DANCE_ENABLE = yes      # Tap dance
 # TERMINAL_ENABLE = no
-UCIS_ENABLE = yes
+UCIS_ENABLE = no
 
 
 LAYOUT_ergodox_VERSION = $(shell \
