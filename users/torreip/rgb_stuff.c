@@ -220,7 +220,11 @@ uint32_t layer_state_set_rgb(uint32_t state)
         break;
 
       case _FUNCTION:
-        rgblight_dim_noeeprom_orange();
+#if defined(KEYBOARD_xd75)
+    	rgblight_dim_noeeprom_coral();
+#else
+   	    rgblight_dim_noeeprom_orange();
+#endif /* KEYBOARDS */
         // rgblight_mode_noeeprom(RGBLIGHT_MODE_BREATHING + 3);
         break;
 
@@ -230,7 +234,11 @@ uint32_t layer_state_set_rgb(uint32_t state)
         break;
 
       case _LOWER:
+#if defined(KEYBOARD_xd75)
+    	rgblight_dim_noeeprom_blue();
+#else
         rgblight_dim_noeeprom_cyan();
+#endif /* KEYBOARDS */
         // rgblight_mode_noeeprom(RGBLIGHT_MODE_BREATHING + 3);
         break;
 
@@ -244,7 +252,7 @@ uint32_t layer_state_set_rgb(uint32_t state)
         {
           default:
 #if defined(KEYBOARD_xd75)
-            rgblight_dim_noeeprom_goldenrod();
+            rgblight_dim_noeeprom_orange();
 #else
             rgblight_dim_noeeprom_blue();
 #endif /* KEYBOARDS */
