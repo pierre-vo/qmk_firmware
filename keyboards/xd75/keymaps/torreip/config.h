@@ -17,7 +17,7 @@
 #ifndef CONFIG_USER_H
 #define CONFIG_USER_H
 
-#include "../../config.h"
+#pragma once
 
 // place overrides here
 //#define BACKLIGHT_ENABLE
