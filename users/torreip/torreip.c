@@ -287,12 +287,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
           send_string_with_delay_P(PSTR(
 #if defined(__ARM__)
               ":dfu-util"
-#elif defined(BOOTLOADER_DFU)
+#elif (defined(BOOTLOADER_DFU) || defined(BOOTLOADER_LUFA_DFU) || defined(BOOTLOADER_QMK_DFU))
               ":dfu"
 #elif defined(BOOTLOADER_HALFKAY)
               ":teensy"
 #elif defined(BOOTLOADER_CATERINA)
               ":avrdude"
+#else
+              ":missing_define"
 #endif // bootloader options
             ), 10);
         }
@@ -351,17 +353,34 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
       if (record->event.pressed)
       {
 #if defined(KEYBOARD_lets_split_eh_eh)
-    	  send_string_with_delay("http://www.keyboard-layout-editor.com/#/gists/7cdd2e5ef3b328117a56f3edff59906b", 10);
+        send_string_with_delay("http://www.keyboard-layout-editor.com/#/gists/7cdd2e5ef3b328117a56f3edff59906b",
+          10);
 #elif defined(KEYBOARD_ergodox_infinity)
-    	  send_string_with_delay("http://www.keyboard-layout-editor.com/#/gists/9dd2c2bd6f1120685ee810303563c7f5", 10);
+        send_string_with_delay("http://www.keyboard-layout-editor.com/#/gists/9dd2c2bd6f1120685ee810303563c7f5",
+          10);
 #elif defined(KEYBOARD_xd75)
-    	  send_string_with_delay("http://www.keyboard-layout-editor.com/#/gists/0e924c013c75d1dc4bbf51806b5500ee", 10);
+        send_string_with_delay("http://www.keyboard-layout-editor.com/#/gists/0e924c013c75d1dc4bbf51806b5500ee",
+          10);
 #else
-    	  send_string_with_delay("http://www.keyboard-layout-editor.com/", 10);
+        send_string_with_delay("http://www.keyboard-layout-editor.com/", 10);
 #endif /* KEYBOARD */
       }
 
       return false;
+      break;
+
+    /* Skip restoring the old RGB if we changed the current manually */
+    case RGB_TOG:
+    case RGB_MOD:
+    case RGB_HUI:
+    case RGB_HUD:
+    case RGB_SAI:
+    case RGB_SAD:
+    case RGB_VAI:
+    case RGB_VAD:
+      //skip = true;
+      singular_key = false;
+      return true;
       break;
 
     /* If any other key was pressed during the layer mod hold period,
@@ -407,3 +426,18 @@ void led_set_user(uint8_t usb_led)
   led_set_keymap(usb_led);
 }
 
+#ifdef TAP_DANCE_ENABLE
+/* Tap Dance Definitions */
+qk_tap_dance_action_t tap_dance_actions[] =
+{
+  /* Shifting for double quote and semicolon */
+  [SCL] = ACTION_TAP_DANCE_DOUBLE(KC_SCLN, KC_COLN),
+  [QUO] = ACTION_TAP_DANCE_DOUBLE(KC_QUOT, KC_DQUO),
+
+  /* complex tap dance function (to specify what happens when key is
+   * pressed 3+ times, for example). See
+   * https://docs.qmk.fm/tap_dance.html for how to define
+  [YOUR_TAPDANCE_2] = ACTION_TAP_DANCE_FUNCTION(your_function_name),0
+  */
+};
+#endif /* TAP_DANCE_ENABLE */

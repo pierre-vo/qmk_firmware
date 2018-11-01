@@ -19,8 +19,6 @@
 
 #include "../../config.h"
 
-#define TAPPING_TERM 200
-
 // place overrides here
 //#define BACKLIGHT_ENABLE
 //#define BACKLIGHT_PIN F5

@@ -7,6 +7,11 @@
   #include "rgb_matrix.h"
 #endif
 
+/* Fillers to make layering more clear */
+#define _______ KC_TRNS
+#define ___T___ KC_TRNS
+#define XXXXXXX KC_NO
+
 
 /* Define layer names */
 enum userspace_layers
@@ -130,6 +135,31 @@ enum userspace_custom_keycodes
 #define MG_NKRO MAGIC_TOGGLE_NKRO
 
 
+//#define M_LOWER M(MACRO_LOWER)
+//#define M_UPPER M(MACRO_UPPER)
+#define ROT_LED M(M_LED)   /* Rotate LED */
+#define CTLENTER MT(MOD_RCTL, KC_ENT)
+#define SHIFTQUOTE MT(MOD_RAISEFT, KC_QUOT)
+#define ALTRIGHT MT(MOD_LALT, KC_RGHT)
+#define MVERSION M(M_VERSION)
+#define ALTSLASH LALT(KC_SLSH)
+#define ALTSHFT LALT(KC_LSFT)
+#define ALTBSP ALT_T(KC_BSPC)
+#define ALTSLSH ALGR_T(KC_SLSH)
+#define SFTBSLS MT(MOD_RSFT, KC_BSLS)
+#define MLSHIFT OSM(KC_LSFT)
+#define MLCTL OSM(KC_LCTL)
+#define CTRLB LCTL(KC_B)
+
+
+#ifdef TAP_DANCE_ENABLE
+/* Tap Dance Declarations */
+enum
+{
+  SCL = 0,
+  QUO,
+};
+#endif /* TAP_DANCE_ENABLE */
 
 /*
 Since our quirky block definitions are basically a list of comma separated

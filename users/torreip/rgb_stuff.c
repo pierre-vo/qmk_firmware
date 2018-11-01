@@ -243,7 +243,11 @@ uint32_t layer_state_set_rgb(uint32_t state)
         switch (biton32(default_layer_state))
         {
           default:
+#if defined(KEYBOARD_xd75)
+            rgblight_dim_noeeprom_goldenrod();
+#else
             rgblight_dim_noeeprom_blue();
+#endif /* KEYBOARDS */
             break;
         }
 
