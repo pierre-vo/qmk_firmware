@@ -2,8 +2,10 @@
 #include "rgb_stuff.h"
 #include "eeprom.h"
 
-extern rgblight_config_t rgblight_config;
-extern userspace_config_t userspace_config;
+#if defined(RGBLIGHT_ENABLE)
+  extern rgblight_config_t rgblight_config;
+  bool has_initialized;
+#endif
 
 #ifdef RGBLIGHT_ENABLE
 void rgblight_sethsv_default_helper(uint8_t index)
@@ -14,20 +16,12 @@ void rgblight_sethsv_default_helper(uint8_t index)
 #endif // RGBLIGHT_ENABLE
 
 #ifdef INDICATOR_LIGHTS
-uint8_t last_mod;
-uint8_t last_led;
-uint8_t last_osm;
-uint8_t current_mod;
-uint8_t current_led;
-uint8_t current_osm;
-
-
 void set_rgb_indicators(uint8_t this_mod, uint8_t this_led, uint8_t this_osm)
 {
   if (userspace_config.rgb_layer_change && biton32(layer_state) == 0)
   {
-    if (this_mod & MODS_SHIFT_MASK || this_led & (1<<USB_LED_CAPS_LOCK)
-      || this_osm & MODS_SHIFT_MASK)
+    if ((this_mod | this_osm) & MOD_MASK_SHIFT
+      || this_led & (1<<USB_LED_CAPS_LOCK))
     {
 #ifdef SHFT_LED1
       rgblight_sethsv_at(120, 255, 255, SHFT_LED1);
@@ -46,7 +40,7 @@ void set_rgb_indicators(uint8_t this_mod, uint8_t this_led, uint8_t this_osm)
 #endif // SHFT_LED2
     }
 
-    if (this_mod & MODS_CTRL_MASK || this_osm & MODS_CTRL_MASK)
+    if ((this_mod | this_osm) & MOD_MASK_CTRL)
     {
 #ifdef CTRL_LED1
       rgblight_sethsv_at(0, 255, 255, CTRL_LED1);
@@ -65,7 +59,7 @@ void set_rgb_indicators(uint8_t this_mod, uint8_t this_led, uint8_t this_osm)
 #endif // CTRL_LED2
     }
 
-    if (this_mod & MODS_GUI_MASK || this_osm & MODS_GUI_MASK)
+    if ((this_mod | this_osm) & MOD_MASK_GUI)
     {
 #ifdef GUI_LED1
       rgblight_sethsv_at(51, 255, 255, GUI_LED1);
@@ -84,7 +78,7 @@ void set_rgb_indicators(uint8_t this_mod, uint8_t this_led, uint8_t this_osm)
 #endif // GUI_LED2
     }
 
-    if (this_mod & MODS_ALT_MASK || this_osm & MODS_ALT_MASK)
+    if ((this_mod | this_osm) & MOD_MASK_ALT)
     {
 #ifdef ALT_LED1
       rgblight_sethsv_at(240, 255, 255, ALT_LED1);
@@ -107,19 +101,22 @@ void set_rgb_indicators(uint8_t this_mod, uint8_t this_led, uint8_t this_osm)
 
 void matrix_scan_indicator(void)
 {
-  current_mod = get_mods();
-  current_led = host_keyboard_leds();
-  current_osm = get_oneshot_mods();
-  set_rgb_indicators(current_mod, current_led, current_osm);
-  last_mod = current_mod;
-  last_led = current_led;
-  last_osm = current_osm;
+  if (has_initialized)
+  {
+    set_rgb_indicators(get_mods(), host_keyboard_leds(), get_oneshot_mods());
+  }
 }
 #endif //INDICATOR_LIGHTS
 
 
 bool process_record_user_rgb(uint16_t keycode, keyrecord_t *record)
 {
+  if ((keycode >= QK_MOD_TAP && keycode <= QK_MOD_TAP_MAX)
+    || (keycode >= QK_LAYER_TAP && keycode <= QK_LAYER_TAP_MAX))
+  {
+    keycode = keycode & 0xFF;
+  }
+
   switch (keycode)
   {
     case KC_RGB_T:  // This allows me to use underglow as layer indication, or as normal
@@ -170,27 +167,34 @@ bool process_record_user_rgb(uint16_t keycode, keyrecord_t *record)
 }
 
 
-void matrix_init_rgb(void)
+
+void keyboard_post_init_rgb(void)
 {
-#ifdef INDICATOR_LIGHTS
-  current_mod = last_mod = get_mods();
-  current_led = last_led = host_keyboard_leds();
-  current_osm = last_osm = get_oneshot_mods();
-#endif
+#if defined(RGBLIGHT_ENABLE) && defined(RGBLIGHT_STARTUP_ANIMATION)
 
   if (userspace_config.rgb_layer_change)
   {
     rgblight_enable_noeeprom();
-
-    switch (biton32(eeconfig_read_default_layer()))
-    {
-      default:
-        rgblight_dim_noeeprom_blue();
-        break;
-    }
-
-    rgblight_mode_noeeprom(1);
   }
+
+  if (rgblight_config.enable)
+  {
+    layer_state_set_user(layer_state);
+    uint16_t old_hue = rgblight_config.hue;
+    rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
+
+    for (uint16_t i = 255; i > 0; i--)
+    {
+      rgblight_sethsv_noeeprom((i + old_hue) % 255, 255, 255);
+      matrix_scan();
+      wait_ms(10);
+    }
+  }
+
+#endif
+  layer_state_set_user(layer_state);
+
+// rgblight_dim_noeeprom_blue();
 }
 
 void matrix_scan_rgb(void)
@@ -201,7 +205,7 @@ void matrix_scan_rgb(void)
 }
 
 
-uint32_t layer_state_set_rgb(uint32_t state)
+layer_state_t layer_state_set_rgb(layer_state_t state)
 {
 #ifdef RGBLIGHT_ENABLE
 
@@ -221,9 +225,9 @@ uint32_t layer_state_set_rgb(uint32_t state)
 
       case _FUNCTION:
 #if defined(KEYBOARD_xd75)
-    	rgblight_dim_noeeprom_coral();
+        rgblight_dim_noeeprom_coral();
 #else
-   	    rgblight_dim_noeeprom_orange();
+        rgblight_dim_noeeprom_orange();
 #endif /* KEYBOARDS */
         // rgblight_mode_noeeprom(RGBLIGHT_MODE_BREATHING + 3);
         break;
@@ -235,7 +239,7 @@ uint32_t layer_state_set_rgb(uint32_t state)
 
       case _LOWER:
 #if defined(KEYBOARD_xd75)
-    	rgblight_dim_noeeprom_blue();
+        rgblight_dim_noeeprom_blue();
 #else
         rgblight_dim_noeeprom_cyan();
 #endif /* KEYBOARDS */
@@ -264,8 +268,6 @@ uint32_t layer_state_set_rgb(uint32_t state)
           RGBLIGHT_MODE_STATIC_LIGHT); // if _MODS layer is on, then breath to denote it
         break;
     }
-
-    //    layer_state_set_indicator(); // Runs every scan, so need to call this here .... since I can't get it working "right" anyhow
   }
 
 #endif // RGBLIGHT_ENABLE
