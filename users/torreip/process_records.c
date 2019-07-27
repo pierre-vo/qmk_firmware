@@ -16,13 +16,64 @@ bool process_record_secrets(uint16_t keycode, keyrecord_t *record)
 // Then runs the _keymap's record handier if not processed here
 bool process_record_user(uint16_t keycode, keyrecord_t *record)
 {
-//  static uint16_t key_timer;
-//  static bool singular_key = false;
+  static uint16_t key_timer;
+  static bool singular_key = false;
 
   switch (keycode)
   {
     case KC_RST:
       reset_keyboard();
+      return false;
+      break;
+
+    case LOWER:
+      if (record->event.pressed)
+      {
+        key_timer = timer_read();
+        singular_key = true;
+        layer_on(_LOWER);
+      }
+      else if (timer_elapsed(key_timer) < LAYER_TOGGLE_DELAY
+        || timer_elapsed(key_timer) > LAYER_SKIP_DELAY
+        || !singular_key)
+      {
+        layer_off(_LOWER);
+      }
+
+      return false;
+      break;
+
+    case RAISE:
+      if (record->event.pressed)
+      {
+        key_timer = timer_read();
+        singular_key = true;
+        layer_on(_RAISE);
+      }
+      else if (timer_elapsed(key_timer) < LAYER_TOGGLE_DELAY
+        || timer_elapsed(key_timer) > LAYER_SKIP_DELAY
+        || !singular_key)
+      {
+        layer_off(_RAISE);
+      }
+
+      return false;
+      break;
+
+    case FUNCTION:
+      if (record->event.pressed)
+      {
+        key_timer = timer_read();
+        singular_key = true;
+        layer_on(_FUNCTION);
+      }
+      else if (timer_elapsed(key_timer) < LAYER_TOGGLE_DELAY
+        || timer_elapsed(key_timer) > LAYER_SKIP_DELAY
+        || !singular_key)
+      {
+        layer_off(_FUNCTION);
+      }
+
       return false;
       break;
 
@@ -82,7 +133,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
     /* If any other key was pressed during the layer mod hold period,
      * then the layer mod was used momentarily, and should block latching */
     default:
-//      singular_key = false;
+      singular_key = false;
     	break;
   }
 

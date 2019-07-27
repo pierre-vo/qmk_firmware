@@ -16,6 +16,9 @@
 #define ___T___ KC_TRNS
 #define XXXXXXX KC_NO
 
+#define LONGPRESS_DELAY 150
+#define LAYER_TOGGLE_DELAY 300
+#define LAYER_SKIP_DELAY 1000
 
 /* Define layer names */
 enum userspace_layers

@@ -54,15 +54,9 @@ bool process_record_user_rgb(uint16_t keycode, keyrecord_t *record)
       break;
 
     case KC_RST:
-      rgblight_enable_noeeprom();
-      rgblight_mode_noeeprom(1);
-      rgblight_dim_noeeprom_red();
       _delay_ms(250);
-      rgblight_dim_noeeprom_yellow();
+      rgblight_mode_noeeprom(RGBLIGHT_MODE_RAINBOW_SWIRL + 5);
       _delay_ms(250);
-      rgblight_dim_noeeprom_coral();
-      _delay_ms(250);
-      rgblight_mode_noeeprom(RGBLIGHT_MODE_BREATHING + 1);
       return false;
       break;
 #endif // RGBLIGHT_ENABLE
