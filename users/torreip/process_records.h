@@ -1,5 +1,4 @@
 #pragma once
-#include "torreip.h"
 
 #if defined(KEYMAP_SAFE_RANGE)
   #define PLACEHOLDER_SAFE_RANGE KEYMAP_SAFE_RANGE
@@ -16,19 +15,11 @@ enum userspace_custom_keycodes
   KC_MAKE,           // Run keyboard's customized make command
   KC_RESET,          // Resets keyboard, with red underglow
   KC_RGB_T,          // Toggles RGB Layer Indication mode
-#ifdef UNICODE_ENABLE
-  UC_FLIP,           // (ಠ痊ಠ)┻━┻
-  UC_TABL,           // ┬─┬ノ( º _ ºノ)
-  UC_SHRG,           // ¯\_(ツ)_/¯
-  UC_DISA,           // ಠ_ಠ
-#endif //UNICODE_ENABLE
   NEW_SAFE_RANGE     //use "NEWPLACEHOLDER for keymap specific codes
 };
 
 bool process_record_secrets(uint16_t keycode, keyrecord_t *record);
 bool process_record_keymap(uint16_t keycode, keyrecord_t *record);
-
-
 
 #define LOWER MO(_LOWER)
 #define RAISE MO(_RAISE)

@@ -21,8 +21,8 @@
   #define RGBLIGHT_SLEEP
   #undef RGBLIGHT_ANIMATIONS
   #define RGBLIGHT_EFFECT_BREATHING
-  #define RGBLIGHT_EFFECT_SNAKE
-  #define RGBLIGHT_EFFECT_KNIGHT
+  #define RGBLIGHT_EFFECT_RAINBOW_MOOD
+  #define RGBLIGHT_EFFECT_RAINBOW_SWIRL
 #endif // RGBLIGHT_ENABLE
 
 #ifndef ONESHOT_TAP_TOGGLE
@@ -63,6 +63,7 @@
   #define TAPPING_TERM 175
 #endif
 
+#define TAP_CODE_DELAY 5
 
 // Disable action_get_macro and fn_actions, since we don't use these
 // and it saves on space in the firmware.

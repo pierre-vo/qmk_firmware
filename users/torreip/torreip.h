@@ -5,7 +5,7 @@
 #include "wrappers.h"
 #include "process_records.h"
 #ifdef TAP_DANCE_ENABLE
-//  #include "tap_dances.h"
+  //  #include "tap_dances.h"
 #endif // TAP_DANCE_ENABLE
 #if defined(RGBLIGHT_ENABLE) || defined(RGB_MATRIX_ENABLE)
   #include "rgb_stuff.h"
@@ -21,10 +21,10 @@
 enum userspace_layers
 {
   _QWERTY = 0,
-  _NUMLOCK = 0,
-  _MODS,
-  _GAMEPAD,
-  _MACROS,
+//  _NUMLOCK = 0,
+//  _MODS,
+//  _GAMEPAD,
+//  _MACROS,
   _MEDIA,
   _LOWER,
   _RAISE,
@@ -40,15 +40,6 @@ define modifiers here, since MOD_* doesn't seem to work for these
 #define MODS_ALT_MASK  (MOD_BIT(KC_LALT)|MOD_BIT(KC_RALT))
 #define MODS_GUI_MASK  (MOD_BIT(KC_LGUI)|MOD_BIT(KC_RGUI))
 
-
-/*
-RGB color codes are no longer located here anymore.  Instead, you will want to
-head to https://github.com/qmk/qmk_firmware/blob/master/quantum/rgblight_list.h
-*/
-
-#ifdef RGBLIGHT_ENABLE
-  void rgblight_sethsv_default_helper(uint8_t index);
-#endif // RGBLIGHT_ENABLE
 
 bool mod_key_press_timer(uint16_t code, uint16_t mod_code, bool pressed);
 bool mod_key_press(uint16_t code, uint16_t mod_code, bool pressed,

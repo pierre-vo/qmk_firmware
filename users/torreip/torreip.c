@@ -1,4 +1,4 @@
-#include "torreip.h"
+  #include "torreip.h"
 #include "version.h"
 #include "eeprom.h"
 //#include "rgb_stuff.h"
@@ -40,7 +40,7 @@ bool mod_key_press(uint16_t code, uint16_t mod_code, bool pressed,
 {
   if (pressed)
   {
-    this_timer= timer_read();
+    this_timer = timer_read();
   }
   else
   {
@@ -59,23 +59,6 @@ bool mod_key_press(uint16_t code, uint16_t mod_code, bool pressed,
   return false;
 }
 
-void bootmagic_lite(void)
-{
-  matrix_scan();
-#if defined(DEBOUNCING_DELAY) && DEBOUNCING_DELAY > 0
-  wait_ms(DEBOUNCING_DELAY * 2);
-#elif defined(DEBOUNCE) && DEBOUNCE > 0
-  wait_ms(DEBOUNCE * 2);
-#else
-  wait_ms(30);
-#endif
-  matrix_scan();
-
-  if (matrix_get_row(BOOTMAGIC_LITE_ROW) & (1 << BOOTMAGIC_LITE_COLUMN))
-  {
-    bootloader_jump();
-  }
-}
 
 // Add reconfigurable functions here, for keymap customization
 // This allows for a global, userspace functions, and continued
@@ -89,14 +72,7 @@ void matrix_init_keymap(void) {}
 void matrix_init_user(void)
 {
   userspace_config.raw = eeconfig_read_user();
-#if (defined(UNICODE_ENABLE) || defined(UNICODEMAP_ENABLE) || defined(UCIS_ENABLE))
 
-  if (eeprom_read_byte(EECONFIG_UNICODEMODE) != UC_WIN)
-  {
-    set_unicode_input_mode(UC_WIN);
-  }
-
-#endif //UNICODE_ENABLE
   matrix_init_keymap();
 }
 
@@ -117,9 +93,9 @@ void shutdown_keymap(void) {}
 void shutdown_user(void)
 {
 #ifdef RGBLIGHT_ENABLE
-  rgblight_enable_noeeprom();
-  rgblight_mode_noeeprom(1);
-  rgblight_setrgb_red();
+  //  rgblight_enable_noeeprom();
+  //  rgblight_mode_noeeprom(1);
+  //  rgblight_setrgb_red();
 #endif // RGBLIGHT_ENABLE
 #ifdef RGB_MATRIX_ENABLE
   // uint16_t timer_start = timer_read();
@@ -161,9 +137,6 @@ void matrix_scan_user(void)
     startup_user();
   }
 
-#ifdef RGBLIGHT_ENABLE
-  matrix_scan_rgb();
-#endif // RGBLIGHT_ENABLE
   matrix_scan_keymap();
 }
 
@@ -226,12 +199,6 @@ void eeconfig_init_user(void)
   userspace_config.raw = 0;
   userspace_config.rgb_layer_change = true;
   eeconfig_update_user(userspace_config.raw);
-#if (defined(UNICODE_ENABLE) || defined(UNICODEMAP_ENABLE) || defined(UCIS_ENABLE))
-//  set_unicode_input_mode(DRASHNA_UNICODE_MODE);
-//  get_unicode_input_mode();
-#else
-//  eeprom_update_byte(EECONFIG_UNICODEMODE, DRASHNA_UNICODE_MODE);
-#endif
 }
 
 #ifdef TAP_DANCE_ENABLE
