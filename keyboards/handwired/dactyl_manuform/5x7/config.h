@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define PRODUCT         Dactyl-Manuform (Ergodox)
 
-#define DEBUG_MATRIX_SCAN_RATE
+//#define DEBUG_MATRIX_SCAN_RATE
 
 /* key matrix size */
 // Rows are doubled-up

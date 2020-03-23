@@ -31,14 +31,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                KC_END, KC_HOME,
                                KC_PSCR, TASK,
         // right hand
-                     RESET,   KC_6,    KC_7,    KC_8,     KC_9,     KC_0,     KC_MINS,
+                     KC_BSPC, KC_6,    KC_7,    KC_8,     KC_9,     KC_0,     KC_MINS,
                      KC_RBRC, KC_Y,    KC_U,    KC_I,     KC_O,     KC_P,     KC_EQL,
                      KC_LBRC, KC_H,    KC_J,    KC_K,     KC_L,     KC_SCLN,  KC_QUOT,
-                              KC_N,    KC_M,    KC_COMM,  KC_DOT,   KC_SLSH,  KC_1,
-                                                KC_2,     KC_3,
-        KC_4,    KC_5,
-        KC_6,    KC_7,
-        KC_8,    KC_9),
+                              KC_N,    KC_M,    KC_COMM,  KC_DOT,   KC_SLSH,  KC_BSLS,
+                                                KC_SLSH,  KC_SLSH,
+        KC_ENT,  RAISE,
+        KC_RSFT, KC_DOWN,
+        KC_PGUP, RESET),
 
 [_LOWER] = LAYOUT_5x7(
   // left hand
@@ -83,10 +83,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 
-
-
+#ifdef ENCODER_ENABLE
 void encoder_update_user(uint8_t index, bool clockwise) {
-  if (index == 0) { /* First encoder */
+  if (index == 1) { /* First encoder */
     switch(biton32(layer_state)){
       case _RAISE:
         if (clockwise) {
@@ -101,15 +100,16 @@ void encoder_update_user(uint8_t index, bool clockwise) {
       default:
         if (clockwise) {
           tap_code(KC_VOLU);
-          // rgblight_increase_hue_noeeprom();
+          rgblight_increase_hue_noeeprom();
         } else {
           tap_code(KC_VOLD);
-          // rgblight_decrease_hue_noeeprom();
+          rgblight_decrease_hue_noeeprom();
         }
         break;
     }
   }
 }
+#endif
 
 void matrix_init_user(void) {
 #ifdef RGBLIGHT_ENABLE
@@ -121,9 +121,14 @@ void matrix_init_user(void) {
 #endif
 }
 
+void keyboard_pre_init_user(void) {
+  setPinInputHigh(D0);
+  setPinInputHigh(D1);
+}
+
 void keyboard_post_init_user(void) {
   // Customise these values to desired behaviour
-  debug_enable=true;
+  //debug_enable=true;
   //debug_matrix=true;
   //debug_keyboard=true;
   //debug_mouse=true;
