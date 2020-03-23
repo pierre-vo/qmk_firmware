@@ -20,17 +20,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "config_common.h"
 
-
 #define PRODUCT         Dactyl-Manuform (Ergodox)
+
+#define DEBUG_MATRIX_SCAN_RATE
 
 /* key matrix size */
 // Rows are doubled-up
 #define MATRIX_ROWS 10
 #define MATRIX_COLS 7
 
+#define USE_I2C
+#define F_SCL 100000L
+#define SPLIT_USB_DETECT
+
 // wiring of each half
 #define MATRIX_ROW_PINS { C6, D7, E6, B4, B5 }
-#define MATRIX_COL_PINS { F5, F6, F7, B1, B3, B2, B6 }
+//#define MATRIX_COL_PINS { F5, F6, F7, B1, B3, B2, B6 }
+#define MATRIX_COL_PINS { B6, B2, B3, B1, F7, F6, F5 }
 
 #define DIODE_DIRECTION COL2ROW
 
@@ -41,7 +47,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   #define RGBLIGHT_HUE_STEP 8
   #define RGBLIGHT_SAT_STEP 8
   #define RGBLIGHT_VAL_STEP 8
-  #define RGBLIGHT_LIMIT_VAL 255 /* The maximum brightness level */
+  #define RGBLIGHT_LIMIT_VAL 100 /* The maximum brightness level */
   #define RGBLIGHT_SLEEP  /* If defined, the RGB lighting will be switched off when the host goes to sleep */
 /*== or choose animations ==*/
   #define RGBLIGHT_EFFECT_BREATHING
@@ -57,6 +63,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define ENCODERS_PAD_B { D2 }
 
 // Bootloader
-#define QMK_ESC_OUTPUT F5 // usually COL
-#define QMK_ESC_INPUT  C6 // usually ROW
+#define QMK_ESC_OUTPUT D2 //F5 // usually COL
+#define QMK_ESC_INPUT  D3 //C6 // usually ROW
 #define QMK_LED B0
