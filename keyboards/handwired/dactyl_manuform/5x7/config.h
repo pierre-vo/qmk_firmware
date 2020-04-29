@@ -30,8 +30,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MATRIX_COLS 7
 
 #define USE_I2C
-#define F_SCL 100000L
-#define SPLIT_USB_DETECT
+#define F_SCL 400000L
+//#define SPLIT_USB_DETECT
 
 // wiring of each half
 #define MATRIX_ROW_PINS { C6, D7, E6, B4, B5 }
@@ -43,7 +43,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // WS2812 RGB LED strip input and number of LEDs
 #define RGB_DI_PIN F4
 #ifdef RGB_DI_PIN
-  #define RGBLED_NUM 1
+  #define RGBLIGHT_LAYERS
+  #define RGB_DISABLE_WHEN_USB_SUSPENDED true
+
+  #define RGBLED_NUM 2
+//  #define RGBLED_SPLIT {1, 1}
   #define RGBLIGHT_HUE_STEP 8
   #define RGBLIGHT_SAT_STEP 8
   #define RGBLIGHT_VAL_STEP 8
@@ -63,6 +67,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define ENCODERS_PAD_B { D2 }
 
 // Bootloader
-#define QMK_ESC_OUTPUT D2 //F5 // usually COL
-#define QMK_ESC_INPUT  D3 //C6 // usually ROW
+#define QMK_ESC_OUTPUT F5 //D2 //F5 // usually COL
+#define QMK_ESC_INPUT  B5 //D3 //C6 // usually ROW
 #define QMK_LED B0

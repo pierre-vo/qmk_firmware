@@ -5,40 +5,54 @@
 
 extern keymap_config_t keymap_config;
 
-#define _QWERTY 0
-#define _LOWER 1
-#define _RAISE 2
+
+/* Layer shorthand */
+enum layers {
+  _QWERTY = 0, /* default layer */
+  _LOWER,      /*  */
+  _RAISE,      /*  */
+};
 
 #define RAISE MO(_RAISE)
 #define LOWER MO(_LOWER)
 
-#define TASK    LCTL(LSFT(KC_ESC))
-#define TAB_R   LCTL(KC_TAB)
-#define TAB_L   LCTL(LSFT(KC_TAB))
-#define TAB_RO  LCTL(LSFT(KC_T))
+/* Short forms for keycodes so that they fit into limited-width cells */
+#define M_LOWER M(MACRO_LOWER)
+#define M_UPPER M(MACRO_UPPER)
+#define ROT_LED M(M_LED)   /* Rotate LED */
+#define CTLENTER MT(MOD_RCTL, KC_ENT)
+#define SHIFTQUOTE MT(MOD_RSFT, KC_QUOT)
+#define ALTRIGHT MT(MOD_LALT, KC_RGHT)
+#define MVERSION M(M_VERSION)
+#define ALTSLASH LALT(KC_SLSH)
+#define ALTSHFT LALT(KC_LSFT)
+#define ALTSLSH ALGR_T(KC_SLSH)
+#define SFTBSLS MT(MOD_RSFT, KC_BSLS)
+#define MLSHIFT OSM(KC_LSFT)
+#define MLCTL OSM(KC_LCTL)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 
 [_QWERTY] = LAYOUT_5x7(
   // left hand
-   KC_ESC,    KC_1,    KC_2,    KC_3,   KC_4,   KC_5,   KC_6,
-   KC_TAB,    KC_Q,    KC_W,    KC_E,   KC_R,   KC_T,   KC_LBRC,
-   KC_LCTL,   KC_A,    KC_S,    KC_D,   RESET,   KC_G,   TAB_RO,
-   MOD_LSFT,  KC_Z,    KC_X,    KC_C,   KC_V,   KC_B,
-                       TAB_L,   TAB_R,
-                               TT(_LOWER), KC_SPC,
-                               KC_END, KC_HOME,
-                               KC_PSCR, TASK,
+   KC_GRV,   KC_1,    KC_2,    KC_3,   KC_4,   KC_5,   RESET,
+   KC_TAB,   KC_Q,    KC_W,    KC_E,   KC_R,   KC_T,   KC_LBRC,
+   KC_LSFT,  KC_A,    KC_S,    KC_D,   KC_F,   KC_G,   KC_ESC,
+   KC_LCTL,  KC_Z,    KC_X,    KC_C,   KC_V,   KC_B,
+                      KC_LGUI,   KC_LALT,
+                               KC_SPC,   KC_BSPC, 
+                               KC_LCTL,  LOWER,
+                               RAISE,    KC_HOME,
         // right hand
-                     KC_BSPC, KC_6,    KC_7,    KC_8,     KC_9,     KC_0,     KC_MINS,
+                     RESET,   KC_6,    KC_7,    KC_8,     KC_9,     KC_0,     KC_MINS,
                      KC_RBRC, KC_Y,    KC_U,    KC_I,     KC_O,     KC_P,     KC_EQL,
-                     KC_LBRC, KC_H,    KC_J,    KC_K,     KC_L,     KC_SCLN,  KC_QUOT,
+                     KC_MEH,  KC_H,    KC_J,    KC_K,     KC_L,     KC_SCLN,  KC_QUOT,
                               KC_N,    KC_M,    KC_COMM,  KC_DOT,   KC_SLSH,  KC_BSLS,
-                                                KC_SLSH,  KC_SLSH,
+                                                ALTSLSH,  KC_SLSH,
         KC_ENT,  RAISE,
-        KC_RSFT, KC_DOWN,
-        KC_PGUP, RESET),
+        KC_RSFT, LOWER,
+        KC_PGUP, KC_PGDN),
 
 [_LOWER] = LAYOUT_5x7(
   // left hand
@@ -53,7 +67,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // right hand
                      KC_F7,     KC_F8,     KC_F9,     KC_F10,    KC_F11,    KC_F12,    _______,
                      _______,   _______,   _______,   _______,   _______,   _______,   _______,
-                     _______,   _______,   _______,   _______,   _______,   _______,   _______,
+                     _______,   _______,   KC_L,      _______,   _______,   _______,   _______,
                                 _______,   _______,   _______,   _______,   _______,   _______,
                                                       _______,   _______,
         KC_DEL, _______,
@@ -76,7 +90,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      _______,   _______,   KC_P4,     KC_P5,     KC_P6,     KC_PAST,   _______,
                                 _______,   KC_P1,     KC_P2,     KC_P3,     KC_PSLS,   _______,
                                                       KC_P0,     KC_PDOT,
-        _______, KC_PENT,
+        _______, _______,
         _______, _______,
         _______, _______),
 
@@ -85,7 +99,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 #ifdef ENCODER_ENABLE
 void encoder_update_user(uint8_t index, bool clockwise) {
-  if (index == 1) { /* First encoder */
+  if (index == 1) { /* First (right) encoder */
     switch(biton32(layer_state)){
       case _RAISE:
         if (clockwise) {
@@ -100,10 +114,29 @@ void encoder_update_user(uint8_t index, bool clockwise) {
       default:
         if (clockwise) {
           tap_code(KC_VOLU);
-          rgblight_increase_hue_noeeprom();
         } else {
           tap_code(KC_VOLD);
-          rgblight_decrease_hue_noeeprom();
+        }
+        break;
+    }
+  }
+  else if (index == 0) { /* Second (left) encoder */
+    switch(biton32(layer_state)){
+      case _RAISE:
+        if (clockwise) {
+          tap_code(KC_UP);
+          // rgblight_increase_hue_noeeprom();
+        } else {
+          tap_code(KC_DOWN);
+          // rgblight_decrease_hue_noeeprom();
+        }
+        break;
+      case _QWERTY:
+      default:
+        if (clockwise) {
+          tap_code(KC_VOLU);
+        } else {
+          tap_code(KC_VOLD);
         }
         break;
     }
@@ -111,14 +144,24 @@ void encoder_update_user(uint8_t index, bool clockwise) {
 }
 #endif
 
+const rgblight_segment_t PROGMEM layer_ind_DEFAULT[] = RGBLIGHT_LAYER_SEGMENTS(
+    {0, 2, HSV_ORANGE}
+);
+const rgblight_segment_t PROGMEM layer_ind_LOWER[] = RGBLIGHT_LAYER_SEGMENTS(
+    {0, 2, RGB_AZURE}
+);
+const rgblight_segment_t PROGMEM layer_ind_RAISE[] = RGBLIGHT_LAYER_SEGMENTS(
+    {0, 2, HSV_RED}
+);
+
+const rgblight_segment_t* const PROGMEM _rgb_layers[] = RGBLIGHT_LAYERS_LIST(
+    layer_ind_DEFAULT,
+    layer_ind_LOWER,
+    layer_ind_RAISE
+);
+
 void matrix_init_user(void) {
-#ifdef RGBLIGHT_ENABLE
-  rgblight_enable();
-  rgblight_sethsv(HSV_RED);
-  rgblight_decrease_val_noeeprom();
-  rgblight_decrease_val_noeeprom();
-  rgblight_decrease_val_noeeprom();
-#endif
+
 }
 
 void keyboard_pre_init_user(void) {
@@ -128,8 +171,36 @@ void keyboard_pre_init_user(void) {
 
 void keyboard_post_init_user(void) {
   // Customise these values to desired behaviour
-  //debug_enable=true;
+  // debug_enable=true;
   //debug_matrix=true;
   //debug_keyboard=true;
   //debug_mouse=true;
+  
+#ifdef RGBLIGHT_LAYERS
+  // Enable the LED layers
+  rgblight_layers = _rgb_layers;
+  //rgblight_set_layer_state(_QWERTY, true);
+#endif // RGBLIGHT_LAYERS
 }
+
+
+#ifdef RGBLIGHT_LAYERS
+layer_state_t layer_state_set_user(layer_state_t state) {
+    // dprintf("         layer   =%d\n", (uint8_t)state);
+    for (uint8_t i=_LOWER; i<=_RAISE; i++) { 
+      bool is_on = layer_state_cmp(state, i);
+      // dprintf("         layer[%d]=%u\n", i, is_on);
+      rgblight_set_layer_state(i, is_on);
+    }
+    
+    return state;
+}
+
+// void suspend_power_down_user(void) {
+    // rgblight_disable();
+// }
+
+// void suspend_wakeup_init_user(void) {
+    // rgblight_enable();
+// }
+#endif // RGBLIGHT_LAYERS
