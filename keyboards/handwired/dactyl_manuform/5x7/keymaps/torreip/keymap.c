@@ -1,5 +1,5 @@
 
-/* A QWERTY 3 Layer layout for the Dactyl Manuform 5x6 Keyboard */ 
+/* A QWERTY 3 Layer layout for the Dactyl Manuform 5x6 Keyboard */
 
 #include QMK_KEYBOARD_H
 
@@ -41,7 +41,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    KC_LSFT,  KC_A,    KC_S,    KC_D,   KC_F,   KC_G,   KC_ESC,
    KC_LCTL,  KC_Z,    KC_X,    KC_C,   KC_V,   KC_B,
                       KC_LGUI,   KC_LALT,
-                               KC_SPC,   KC_BSPC, 
+                               KC_SPC,   KC_BSPC,
                                KC_LCTL,  LOWER,
                                RAISE,    KC_HOME,
         // right hand
@@ -175,7 +175,7 @@ void keyboard_post_init_user(void) {
   //debug_matrix=true;
   //debug_keyboard=true;
   //debug_mouse=true;
-  
+
 #ifdef RGBLIGHT_LAYERS
   // Enable the LED layers
   rgblight_layers = _rgb_layers;
@@ -185,14 +185,28 @@ void keyboard_post_init_user(void) {
 
 
 #ifdef RGBLIGHT_LAYERS
-layer_state_t layer_state_set_user(layer_state_t state) {
+
+layer_state_t default_layer_state_set_user_rgb(layer_state_t state)
+ {
     // dprintf("         layer   =%d\n", (uint8_t)state);
-    for (uint8_t i=_LOWER; i<=_RAISE; i++) { 
+    for (uint8_t i=_QWERTY; i<=_RAISE; i++) {
       bool is_on = layer_state_cmp(state, i);
       // dprintf("         layer[%d]=%u\n", i, is_on);
       rgblight_set_layer_state(i, is_on);
     }
-    
+
+    return state;
+}
+
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+    // dprintf("         layer   =%d\n", (uint8_t)state);
+    for (uint8_t i=_QWERTY; i<=_RAISE; i++) {
+      bool is_on = layer_state_cmp(state, i);
+      // dprintf("         layer[%d]=%u\n", i, is_on);
+      rgblight_set_layer_state(i, is_on);
+    }
+
     return state;
 }
 
