@@ -31,14 +31,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                KC_END, KC_HOME,
                                KC_PSCR, TASK,
         // right hand
-                     KC_7,    KC_8,    KC_9,    KC_0,     KC_MINS,  KC_EQL,   KC_GRV,
-                     KC_RBRC, KC_Y,    KC_U,    KC_I,     KC_O,     KC_P,     KC_BSLS,
-                 TG(_RAISE),  KC_H,    RESET,    KC_K,     KC_L,     KC_SCLN,  KC_QUOT,
-                              KC_N,    KC_M,    KC_COMM,  KC_DOT,   KC_SLSH,  OSM(MOD_RSFT),
-                                                KC_LEFT, KC_UP,
-        KC_BSPC, KC_ENT,
-        KC_PGUP, KC_PGDN,
-        KC_LCTL, KC_LALT),
+                     RESET,   KC_6,    KC_7,    KC_8,     KC_9,     KC_0,     KC_MINS,
+                     KC_RBRC, KC_Y,    KC_U,    KC_I,     KC_O,     KC_P,     KC_EQL,
+                     KC_LBRC, KC_H,    KC_J,    KC_K,     KC_L,     KC_SCLN,  KC_QUOT,
+                              KC_N,    KC_M,    KC_COMM,  KC_DOT,   KC_SLSH,  KC_1,
+                                                KC_2,     KC_3,
+        KC_4,    KC_5,
+        KC_6,    KC_7,
+        KC_8,    KC_9),
 
 [_LOWER] = LAYOUT_5x7(
   // left hand
@@ -82,10 +82,49 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 };
 
+
+
+
+void encoder_update_user(uint8_t index, bool clockwise) {
+  if (index == 0) { /* First encoder */
+    switch(biton32(layer_state)){
+      case _RAISE:
+        if (clockwise) {
+          tap_code(KC_UP);
+          // rgblight_increase_hue_noeeprom();
+        } else {
+          tap_code(KC_DOWN);
+          // rgblight_decrease_hue_noeeprom();
+        }
+        break;
+      case _QWERTY:
+      default:
+        if (clockwise) {
+          tap_code(KC_VOLU);
+          // rgblight_increase_hue_noeeprom();
+        } else {
+          tap_code(KC_VOLD);
+          // rgblight_decrease_hue_noeeprom();
+        }
+        break;
+    }
+  }
+}
+
+void matrix_init_user(void) {
+#ifdef RGBLIGHT_ENABLE
+  rgblight_enable();
+  rgblight_sethsv(HSV_RED);
+  rgblight_decrease_val_noeeprom();
+  rgblight_decrease_val_noeeprom();
+  rgblight_decrease_val_noeeprom();
+#endif
+}
+
 void keyboard_post_init_user(void) {
   // Customise these values to desired behaviour
   debug_enable=true;
-  debug_matrix=true;
+  //debug_matrix=true;
   //debug_keyboard=true;
   //debug_mouse=true;
 }
