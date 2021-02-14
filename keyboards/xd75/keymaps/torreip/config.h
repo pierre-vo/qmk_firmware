@@ -23,6 +23,10 @@
 
 #define RGBLIGHT_SLEEP
 
+#define BOOTMAGIC_KEY_SALT KC_SPACE
+
+//#define RGBLIGHT_LAYERS
+
 // place overrides here
 //#define BACKLIGHT_ENABLE
 //#define BACKLIGHT_PIN F5
