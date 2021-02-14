@@ -26,15 +26,38 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* key matrix size */
 // Rows are doubled-up
-#define MATRIX_ROWS 12
+#define MATRIX_ROWS 10
 #define MATRIX_COLS 7
 
 // wiring of each half
-#define MATRIX_ROW_PINS { D4, C6, D7, E6, B4, B5 }
+#define MATRIX_ROW_PINS { C6, D7, E6, B4, B5 }
 #define MATRIX_COL_PINS { F5, F6, F7, B1, B3, B2, B6 }
 
 #define DIODE_DIRECTION COL2ROW
 
 // WS2812 RGB LED strip input and number of LEDs
-#define RGB_DI_PIN D3
-#define RGBLED_NUM 12
+#define RGB_DI_PIN F4
+#ifdef RGB_DI_PIN
+  #define RGBLED_NUM 1
+  #define RGBLIGHT_HUE_STEP 8
+  #define RGBLIGHT_SAT_STEP 8
+  #define RGBLIGHT_VAL_STEP 8
+  #define RGBLIGHT_LIMIT_VAL 255 /* The maximum brightness level */
+  #define RGBLIGHT_SLEEP  /* If defined, the RGB lighting will be switched off when the host goes to sleep */
+/*== or choose animations ==*/
+  #define RGBLIGHT_EFFECT_BREATHING
+  #define RGBLIGHT_EFFECT_RAINBOW_MOOD
+  /*==== (DEFAULT) use fixed table instead of exp() and sin() ====*/
+  #define RGBLIGHT_BREATHE_TABLE_SIZE 256      // 256(default) or 128 or 64
+  /*==== use exp() and sin() ====*/
+  #define RGBLIGHT_EFFECT_BREATHE_CENTER 1.85  // 1 to 2.7
+  #define RGBLIGHT_EFFECT_BREATHE_MAX    255   // 0 to 255
+#endif
+
+#define ENCODERS_PAD_A { D3 }
+#define ENCODERS_PAD_B { D2 }
+
+// Bootloader
+#define QMK_ESC_OUTPUT F5 // usually COL
+#define QMK_ESC_INPUT  C6 // usually ROW
+#define QMK_LED B0
