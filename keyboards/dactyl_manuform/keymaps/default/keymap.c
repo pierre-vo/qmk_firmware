@@ -57,7 +57,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                       KC_LGUI,   KC_LALT,
                                KC_SPC,   KC_BSPC,
                                KC_LCTL,  LOWER,
-                               RAISE,    KC_HOME,
+                               KC_LALT,  KC_ESC,
         // right hand
                      RESET,   KC_6,    KC_7,    KC_8,     KC_9,     KC_0,     KC_MINS,
                      KC_RBRC, KC_Y,    KC_U,    KC_I,     KC_O,     KC_P,     KC_EQL,
@@ -65,10 +65,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                               KC_N,    KC_M,    KC_COMM,  KC_DOT,   KC_SLSH,  KC_BSLS,
                                                 ALTSLSH,  KC_SLSH,
         KC_ENT,  RAISE,
-        KC_RSFT, LOWER,
+        KC_RSFT, KC_LALT,
         KC_PGUP, KC_PGDN),
 
-[_LOWER] = LAYOUT(
+[_RAISE] = LAYOUT(
   // left hand
    _______,   KC_F1,     KC_F2,      KC_F3,    KC_F4,     KC_F5,    KC_F6,
    _______,   _______,   _______,    KC_UP,    _______,   _______,  _______,
@@ -88,7 +88,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, _______,
         _______, _______),
 
-[_RAISE] = LAYOUT(
+[_LOWER] = LAYOUT(
   // left hand
    _______,   _______,   _______,   _______,   _______,   _______,  _______,
    _______,   _______,   _______,   _______,   _______,   _______,  _______,
@@ -159,6 +159,8 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
 }
 #endif
 
+
+#ifdef RGBLIGHT_LAYERS
 const rgblight_segment_t PROGMEM layer_ind_DEFAULT[] = RGBLIGHT_LAYER_SEGMENTS(
     {0, 2, HSV_ORANGE}
 );
@@ -174,6 +176,7 @@ const rgblight_segment_t* const PROGMEM _rgb_layers[] = RGBLIGHT_LAYERS_LIST(
     layer_ind_LOWER,
     layer_ind_RAISE
 );
+#endif // RGBLIGHT_LAYERS
 
 void matrix_init_user(void) {
 
@@ -186,7 +189,7 @@ void keyboard_pre_init_user(void) {
 
 void keyboard_post_init_user(void) {
   // Customise these values to desired behaviour
-  // debug_enable=true;
+  //debug_enable=true;
   //debug_matrix=true;
   //debug_keyboard=true;
   //debug_mouse=true;
