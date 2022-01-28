@@ -241,15 +241,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       break;
 
     case RST:
-      rgblight_enable();
-      rgblight_mode(1);
+      rgblight_disable_noeeprom();
 
-      rgblight_sethsv_noeeprom(0x00, 0xFF, 0xFF);
-      _delay_ms(250);
-      rgblight_sethsv_noeeprom(0x3C, 0xFF, 0xFF);
-      _delay_ms(250);
-      rgblight_sethsv_noeeprom(0x00, 0xFF, 0xFF);
-      _delay_ms(250);
+      _delay_ms(50);
 
       reset_keyboard();
       return false;
@@ -266,3 +260,44 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 }
 
 
+// Light LEDs 9 & 10 in cyan when keyboard layer 1 is active
+const rgblight_segment_t PROGMEM my_layerQW_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+    {0, 6, HSV_MINE_QW}
+);
+// Light LEDs 11 & 12 in purple when keyboard layer 2 is active
+const rgblight_segment_t PROGMEM my_layerLW_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+    {0, 6, HSV_MINE_LW}
+);
+// Light LEDs 13 & 14 in green when keyboard layer 3 is active
+const rgblight_segment_t PROGMEM my_layerRS_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+    {0, 6, HSV_MINE_RS}
+);
+// Light LEDs 13 & 14 in green when keyboard layer 3 is active
+const rgblight_segment_t PROGMEM my_layerFN_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+    {0, 6, HSV_MINE_FN}
+);
+
+// Now define the array of layers. Later layers take precedence
+const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
+    my_layerQW_layer,    // Overrides other layers
+    my_layerLW_layer,    // Overrides other layers
+    my_layerRS_layer,    // Overrides other layers
+    my_layerFN_layer     // Overrides other layers
+);
+
+void keyboard_post_init_user(void) {
+    // Enable the LED layers
+    rgblight_layers = my_rgb_layers;
+}
+
+layer_state_t default_layer_state_set_user(layer_state_t state) {
+    rgblight_set_layer_state(0, layer_state_cmp(state, _QW));
+    return state;
+}
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+    rgblight_set_layer_state(1, layer_state_cmp(state, _LW));
+    rgblight_set_layer_state(2, layer_state_cmp(state, _RS));
+    rgblight_set_layer_state(3, layer_state_cmp(state, _FN));
+    return state;
+}
