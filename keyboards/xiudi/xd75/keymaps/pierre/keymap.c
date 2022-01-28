@@ -78,7 +78,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_QW] = LAYOUT_ortho_5x15( /* QWERTY */
         KC_GRV,  KC_1,    KC_2,    KC_3,     KC_4,    KC_5,   KC_ESC,   KC_F5, KC_BSPC,   KC_6,   KC_7,    KC_8,    KC_9,    KC_0, KC_MINS,
         KC_TAB,  KC_Q,    KC_W,    KC_E,     KC_R,    KC_T,  KC_LBRC,    FUNC, KC_RBRC,   KC_Y,   KC_U,    KC_I,    KC_O,    KC_P,  KC_EQL,
-        KC_DEL , KC_A,    KC_S,    KC_D,     KC_F,    KC_G,    CTRLB,  KC_F14,  KC_F15,   KC_H,   KC_J,    KC_K,    KC_L, XXXXXXX, XXXXXXX,
+        KC_DEL , KC_A,    KC_S,    KC_D,     KC_F,    KC_G,    CTRLB,  KC_F14,  KC_F15,   KC_H,   KC_J,    KC_K,    KC_L, TD(SCL), TD(QUO),
         KC_LSFT, KC_Z,    KC_X,    KC_C,     KC_V,    KC_B,   KC_F16, KC_RCTL, KC_PGUP,   KC_N,   KC_M, KC_COMM,  KC_DOT,   KC_UP, SFTBSLS,
         KC_LCTL, KC_LGUI, ALTSHFT, KC_LALT, LOWER,  KC_SPC,  KC_BSPC, KC_PGDN, KC_LSFT, KC_ENT,  RAISE, ALTSLSH, KC_LEFT, KC_DOWN, KC_RGHT
     ),
@@ -150,3 +150,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
           RST  ,  KMAP  , _______, _______, XXXXXXX, _______,   _______, _______, _______,   _______, XXXXXXX, _______, _______, _______, _______
     )
 };
+
+
+/* Tap Dance Definitions */
+qk_tap_dance_action_t tap_dance_actions[] = {
+  /* Shifting for double quote and semicolon */
+  [SCL] = ACTION_TAP_DANCE_DOUBLE(KC_SCLN, KC_COLN),
+  [QUO] = ACTION_TAP_DANCE_DOUBLE(KC_QUOT, KC_DQUO),
+
+  /* complex tap dance function (to specify what happens when key is
+   * pressed 3+ times, for example). See
+   * https://docs.qmk.fm/tap_dance.html for how to define
+  [YOUR_TAPDANCE_2] = ACTION_TAP_DANCE_FN(your_function_name),0
+  */
+};
+
+
+
