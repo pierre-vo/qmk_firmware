@@ -165,5 +165,104 @@ qk_tap_dance_action_t tap_dance_actions[] = {
   */
 };
 
+#ifndef QMK_VERSION
+  #define QMK_VERSION "VER"
+  #define QMK_BUILDDATE "DATE"
+#endif
+
+static uint16_t key_timer;
+static bool singular_key = false;
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+
+  switch (keycode) {
+    // dynamically generate these.
+    case VRSN:
+      if (record->event.pressed) {
+	SEND_STRING (QMK_KEYBOARD "/" QMK_KEYMAP " @ " QMK_VERSION ", Built on: " QMK_BUILDDATE);
+        //SEND_STRING(QMK_KEYBOARD "/" QMK_KEYMAP " @ " QMK_VERSION);
+        //SEND_STRING(QMK_KEYBOARD "/" QMK_KEYMAP " @ " );
+      }
+
+      return false;
+      break;
+
+    case KMAP:
+      if (record->event.pressed) {
+        SEND_STRING("http://www.keyboard-layout-editor.com/#/gists/0e924c013c75d1dc4bbf51806b5500ee");
+      }
+
+      return false;
+      break;
+
+
+    case LOWER:
+      if (record->event.pressed) {
+        key_timer = timer_read();
+        singular_key = true;
+        layer_on(_LW);
+
+      } else if (timer_elapsed(key_timer) < LAYER_TOGGLE_DELAY
+                 || timer_elapsed(key_timer) > LAYER_SKIP_DELAY
+                 || !singular_key) {
+        layer_off(_LW);
+      }
+
+      return false;
+      break;
+
+    case RAISE:
+      if (record->event.pressed) {
+        key_timer = timer_read();
+        singular_key = true;
+        layer_on(_RS);
+
+      } else if (timer_elapsed(key_timer) < LAYER_TOGGLE_DELAY
+                 || timer_elapsed(key_timer) > LAYER_SKIP_DELAY
+                 || !singular_key) {
+        layer_off(_RS);
+      }
+
+      return false;
+      break;
+
+    case FUNC:
+      if (record->event.pressed) {
+        key_timer = timer_read();
+        singular_key = true;
+        layer_on(_FN);
+
+       } else if (timer_elapsed(key_timer) < LAYER_TOGGLE_DELAY
+                 || timer_elapsed(key_timer) > LAYER_SKIP_DELAY
+                 || !singular_key) {
+        layer_off(_FN);
+      }
+
+      return false;
+      break;
+
+    case RST:
+      rgblight_enable();
+      rgblight_mode(1);
+
+      rgblight_sethsv_noeeprom(0x00, 0xFF, 0xFF);
+      _delay_ms(250);
+      rgblight_sethsv_noeeprom(0x3C, 0xFF, 0xFF);
+      _delay_ms(250);
+      rgblight_sethsv_noeeprom(0x00, 0xFF, 0xFF);
+      _delay_ms(250);
+
+      reset_keyboard();
+      return false;
+      break;
+
+    /* If any other key was pressed during the layer mod hold period,
+     * then the layer mod was used momentarily, and should block latching */
+    default:
+      singular_key = false;
+      break;
+  }
+
+  return true;
+}
 
 
