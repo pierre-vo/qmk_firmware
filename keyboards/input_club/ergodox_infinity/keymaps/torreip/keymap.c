@@ -30,7 +30,7 @@
 #define LAYER_SKIP_DELAY 1000
 
 /* Fillers to make layering more clear */
-#define _______ KC_TRNS
+//#define _______ KC_TRNS
 #define ___T___ KC_TRNS
 #define XXXXXXX KC_NO
 
@@ -99,7 +99,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 // If it accepts an argument (i.e, is a function), it doesn't need KC_.
 // Otherwise, it needs KC_*
-[BASE] = KEYMAP(  // layer 0 : default
+[BASE] = LAYOUT_ergodox(  // layer 0 : default
         // left hand
         KC_GRV,  KC_1,    KC_2,    KC_3,   KC_4,   KC_5,   KC_ESC,
         KC_TAB,  KC_Q,    KC_W,    KC_E,   KC_R,   KC_T,   KC_LBRC,
@@ -140,7 +140,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                                 |      |      |      |       |      |      |      |
  *                                 `--------------------'       `--------------------'
  */
-[SYMB] = KEYMAP(
+[SYMB] = LAYOUT_ergodox(
        // left hand
        _______,KC_F1,  KC_F2,  KC_F3,  KC_F4,  KC_F5,  _______,
        _______,KC_EXLM,KC_AT,  KC_LBRC,KC_RBRC,KC_PIPE,_______,
@@ -181,7 +181,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                                 |      |      |      |       |      |      |      |
  *                                 `--------------------'       `--------------------'
  */
-[MDIA] = KEYMAP(
+[MDIA] = LAYOUT_ergodox(
        KC_ACL0, KC_ACL1, KC_ACL2, _______, _______, _______, _______,
        _______, _______, _______, KC_MS_U, _______, _______, _______,
        _______, _______, KC_MS_L, KC_MS_D, KC_MS_R, _______,
@@ -203,26 +203,26 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 
-const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
-  // MACRODOWN only works in this function
-  switch(id) {
-    case 0:
-      if (record->event.pressed) {
-        SEND_STRING (QMK_KEYBOARD "/" QMK_KEYMAP " @ " QMK_VERSION);
-      }
+// const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
+//   // MACRODOWN only works in this function
+//   switch(id) {
+//     case 0:
+//       if (record->event.pressed) {
+//         SEND_STRING (QMK_KEYBOARD "/" QMK_KEYMAP " @ " QMK_VERSION);
+//       }
 
-      break;
+//       break;
 
-    case 1:
-      if (record->event.pressed) { // For resetting EEPROM
-        eeconfig_init();
-      }
+//     case 1:
+//       if (record->event.pressed) { // For resetting EEPROM
+//         eeconfig_init();
+//       }
 
-      break;
-  }
+//       break;
+//   }
 
-  return MACRO_NONE;
-};
+//   return MACRO_NONE;
+// };
 
 static uint16_t key_timer;
 static bool singular_key = false;
