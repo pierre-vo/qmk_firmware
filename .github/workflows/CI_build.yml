@@ -1,0 +1,41 @@
+name: C/C++ CI
+
+on:
+  pull_request:
+    branches: [ "mine" ]
+    paths-ignore:
+    - 'docs/**'
+    - 'util/**'
+    - 'tests/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    container: qmkfm/base_container
+  
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        submodules: 'recursive'
+  
+    - name: Print info
+      run: |
+        git rev-parse --short HEAD
+        echo ${{ github.event.pull_request.base.sha }}
+  
+    - name: Build xd75
+      shell: 'bash {0}'
+      env:
+        MAKEFLAGS: '-j --output-sync'
+      run: |
+        make xiudi/xd75:pierre
+
+    - name: Build let s split eh
+      shell: 'bash {0}'
+      env:
+        MAKEFLAGS: '-j --output-sync'
+      run: |
+        make maple_computing/lets_split_eh:pierre
