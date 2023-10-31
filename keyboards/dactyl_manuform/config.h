@@ -17,14 +17,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "config_common.h"
+// #include "config_common.h"
 
 /* USB Device descriptor parameter */
-#define VENDOR_ID    0xFEED
-#define PRODUCT_ID   0xCAFE
-#define DEVICE_VER   0x0001
-#define MANUFACTURER pierre
-#define PRODUCT      dactyl-manuform
+// #define VENDOR_ID    0xFEED
+// #define PRODUCT_ID   0xCAFE
+// #define DEVICE_VER   0x0001
+// #define MANUFACTURER pierre
+// #define PRODUCT      dactyl-manuform
 
 /* key matrix size */
 #define MATRIX_ROWS 10
@@ -71,8 +71,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //#define BACKLIGHT_LEVELS 3
 //#define BACKLIGHT_BREATHING
 
-#define RGB_DI_PIN F4
-#ifdef RGB_DI_PIN
+#define WS2812_DI_PIN F4
+#ifdef WS2812_DI_PIN
   #define RGBLIGHT_LAYERS
   #define RGB_DISABLE_WHEN_USB_SUSPENDED true
 
@@ -157,8 +157,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //#define NO_ACTION_ONESHOT
 
 /* disable these deprecated features by default */
-#define NO_ACTION_MACRO
-#define NO_ACTION_FUNCTION
+// #define NO_ACTION_MACRO
+// #define NO_ACTION_FUNCTION
 
 /* Bootmagic Lite key configuration */
 //#define BOOTMAGIC_LITE_ROW 0
