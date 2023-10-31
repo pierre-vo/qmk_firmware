@@ -111,52 +111,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 
-#ifdef ENCODER_ENABLE
-bool encoder_update_user(uint8_t index, bool clockwise) {
-  if (index == 1) { /* First (right) encoder */
-    switch(biton32(layer_state)){
-      case _RAISE:
-        if (clockwise) {
-          tap_code(KC_UP);
-          // rgblight_increase_hue_noeeprom();
-        } else {
-          tap_code(KC_DOWN);
-          // rgblight_decrease_hue_noeeprom();
-        }
-        break;
-      case _QWERTY:
-      default:
-        if (clockwise) {
-          tap_code(KC_VOLU);
-        } else {
-          tap_code(KC_VOLD);
-        }
-        break;
-    }
-  }
-  else if (index == 0) { /* Second (left) encoder */
-    switch(biton32(layer_state)){
-      case _RAISE:
-        if (clockwise) {
-          tap_code(KC_UP);
-          // rgblight_increase_hue_noeeprom();
-        } else {
-          tap_code(KC_DOWN);
-          // rgblight_decrease_hue_noeeprom();
-        }
-        break;
-      case _QWERTY:
-      default:
-        if (clockwise) {
-          tap_code(KC_VOLU);
-        } else {
-          tap_code(KC_VOLD);
-        }
-        break;
-    }
-  }
-  return false;
-}
+#if defined(ENCODER_MAP_ENABLE)
+const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
+    [0] =   { ENCODER_CCW_CW(KC_VOLU, KC_VOLD), ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
+    [1] =   { ENCODER_CCW_CW(KC_VOLU, KC_VOLD), ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
+    [2] =   { ENCODER_CCW_CW(KC_VOLU, KC_VOLD), ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
+    //                  Encoder 1                                     Encoder 2
+};
 #endif
 
 

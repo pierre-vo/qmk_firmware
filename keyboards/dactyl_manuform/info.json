@@ -1,14 +1,29 @@
 {
-    "keyboard_name": "dactyl_manuform",
+    "keyboard_name": "Dactyl Manuform",
     "manufacturer": "handwired",
     "url": "",
     "maintainer": "pierre",
     "width": 17,
     "height": 8,
     "usb": {
-        "vid": "0xFEED",
-        "pid": "0xCAFE",
+        "vid": "0x444D",
+        "pid": "0x3538",
         "device_version": "0.0.1"
+    },
+    "bootmagic": {
+        "matrix": [4, 6]
+    },
+    "features": {
+        "encoder": true,
+        "bootmagic": true
+    },
+    "dynamic_keymap": {
+        "layer_count": 3
+    },
+    "encoder": {
+        "rotary": [
+            { "pin_a": "D3", "pin_b": "D2", "resolution": 4 }
+        ]
     },
     "layouts": {
         "LAYOUT": {
