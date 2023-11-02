@@ -16,53 +16,51 @@
 
 #include QMK_KEYBOARD_H
 #include <stdbool.h>
-//#include "debug.h"
+// #include "debug.h"
 #include "action_layer.h"
-//#include "action_util.h"
+// #include "action_util.h"
 #include "timer.h"
 #include "eeconfig.h"
 #include "wait.h"
 #include "version.h"
-
 
 #define LONGPRESS_DELAY 150
 #define LAYER_TOGGLE_DELAY 300
 #define LAYER_SKIP_DELAY 1000
 
 /* Fillers to make layering more clear */
-//#define _______ KC_TRNS
+// #define _______ KC_TRNS
 #define ___T___ KC_TRNS
 #define XXXXXXX KC_NO
 
 /* Layer shorthand */
 enum layers {
-  BASE = 0, /* default layer */
-  SYMB,     /* symbols */
-  MDIA,     /* media keys */
+    BASE = 0, /* default layer */
+    SYMB,     /* symbols */
+    MDIA,     /* media keys */
 };
 
 enum custom_keycodes {
-  PLACEHOLDER = SAFE_RANGE, /* can always be here */
-  LOWER,
-  RAISE,
-  EPRM,
-  VRSN,
-  RST,
-  KMAP,
-  RGB_SLD
+    PLACEHOLDER = SAFE_RANGE, /* can always be here */
+    LOWER,
+    RAISE,
+    EPRM,
+    VRSN,
+    RST,
+    KMAP,
+    RGB_SLD
 };
 
 /* Tap Dance Declarations */
 enum {
-  SCL = 0,
-  QUO,
+    SCL = 0,
+    QUO,
 };
-
 
 /* Short forms for keycodes so that they fit into limited-width cells */
 #define M_LOWER M(MACRO_LOWER)
 #define M_UPPER M(MACRO_UPPER)
-#define ROT_LED M(M_LED)   /* Rotate LED */
+#define ROT_LED M(M_LED) /* Rotate LED */
 #define CTLENTER MT(MOD_RCTL, KC_ENT)
 #define SHIFTQUOTE MT(MOD_RSFT, KC_QUOT)
 #define ALTRIGHT MT(MOD_LALT, KC_RGHT)
@@ -73,7 +71,6 @@ enum {
 #define SFTBSLS MT(MOD_RSFT, KC_BSLS)
 #define MLSHIFT OSM(KC_LSFT)
 #define MLCTL OSM(KC_LCTL)
-
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* Keymap 0: Basic layer
@@ -201,28 +198,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        _______, _______, _______
 ),
 };
-
-
-// const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
-//   // MACRODOWN only works in this function
-//   switch(id) {
-//     case 0:
-//       if (record->event.pressed) {
-//         SEND_STRING (QMK_KEYBOARD "/" QMK_KEYMAP " @ " QMK_VERSION);
-//       }
-
-//       break;
-
-//     case 1:
-//       if (record->event.pressed) { // For resetting EEPROM
-//         eeconfig_init();
-//       }
-
-//       break;
-//   }
-
-//   return MACRO_NONE;
-// };
 
 static uint16_t key_timer;
 static bool singular_key = false;
@@ -353,8 +328,6 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 
 /* Called at startup */
 void matrix_init_user(void) {
-  set_unicode_input_mode(UC_LNX);
-
   if (!eeconfig_is_enabled())
     eeconfig_init();
 
@@ -364,26 +337,65 @@ void matrix_init_user(void) {
   #endif */ /* RGBLIGHT_ENABLE */
 }
 
+#ifdef ST7565_ENABLE
+static void render_status(void) {
+    // Host Keyboard Layer Status
+    st7565_write_P(PSTR("Layer: "), false);
 
-/* Called all the time */
-void matrix_scan_user(void) {
+    switch (get_highest_layer(layer_state)) {
+        case BASE:
+            // state->target_lcd_color = LCD_COLOR(84, saturation, 0xFF);
+            ergodox_infinity_lcd_color(0, 0, 0);
+            st7565_write_P(PSTR("DEFAULT\n"), false);
+            break;
+        case SYMB:
+            // state->target_lcd_color = LCD_COLOR(168, saturation, 0xFF);
+            ergodox_infinity_lcd_color(0x00, 0x00, 0xFFFF/2);
+            st7565_write_P(PSTR("SYMBOL\n"), false);
+            break;
+        case MDIA:
+            // state->target_lcd_color = LCD_COLOR(0, saturation, 0xFF);
+            ergodox_infinity_lcd_color(0xFFFF/2, 0x00, 0x00);
+            st7565_write_P(PSTR("MEDIA\n"), false);
+            break;
+        default:
+            // Or use the write_ln shortcut over adding '\n' to the end of your string
+            st7565_write_ln_P(PSTR("Undefined"), false);
+    }
 
-};
+    uint8_t mods = get_mods() | get_weak_mods();
+    st7565_write_P(PSTR("\n"), false);
+    st7565_write_P((mods & MOD_MASK_GUI) ? PSTR("GUI ") : PSTR("    "), false);
+    st7565_write_P((mods & MOD_MASK_ALT) ? PSTR("ALT ") : PSTR("    "), false);
+    st7565_write_P((mods & MOD_MASK_CTRL) ? PSTR("CTRL ") : PSTR("     "), false);
+    st7565_write_P((mods & MOD_MASK_SHIFT) ? PSTR("SHFT ") : PSTR("     "), false);
+    st7565_write_P(PSTR("\n"), false);
 
+    // Host Keyboard LED Status
+    led_t led_state = host_keyboard_led_state();
+    st7565_write_P(led_state.num_lock ? PSTR("NUM ") : PSTR("    "), false);
+    st7565_write_P(led_state.caps_lock ? PSTR("CAP ") : PSTR("    "), false);
+    st7565_write_P(led_state.scroll_lock ? PSTR("SCR ") : PSTR("    "), false);
+}
 
-const qk_ucis_symbol_t ucis_symbol_table[] = UCIS_TABLE
-    (
-      UCIS_SYM("poop", 0x1f4a9),
-      UCIS_SYM("rofl", 0x1f923),
-      UCIS_SYM("kiss", 0x1f619),
-      UCIS_SYM("snowman", 0x2603),
-      UCIS_SYM("coffee", 0x2615),
-      UCIS_SYM("heart", 0x2764),
-      UCIS_SYM("bolt", 0x26a1),
-      UCIS_SYM("pi", 0x03c0),
-      UCIS_SYM("mouse", 0x1f401),
-      UCIS_SYM("micro", 0x00b5),
-      UCIS_SYM("tm", 0x2122),
-      UCIS_SYM("child", 0x1f476),
-      UCIS_SYM("family", 0x1F46A)
-    );
+// static void render_logo(void) {
+//     static const char PROGMEM qmk_logo[] = {
+//         0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89, 0x8A, 0x8B, 0x8C, 0x8D, 0x8E, 0x8F, 0x90, 0x91, 0x92, 0x93, 0x94,
+//         0xA0, 0xA1, 0xA2, 0xA3, 0xA4, 0xA5, 0xA6, 0xA7, 0xA8, 0xA9, 0xAA, 0xAB, 0xAC, 0xAD, 0xAE, 0xAF, 0xB0, 0xB1, 0xB2, 0xB3, 0xB4,
+//         0xC0, 0xC1, 0xC2, 0xC3, 0xC4, 0xC5, 0xC6, 0xC7, 0xC8, 0xC9, 0xCA, 0xCB, 0xCC, 0xCD, 0xCE, 0xCF, 0xD0, 0xD1, 0xD2, 0xD3, 0xD4, 0x00
+//     };
+
+//     st7565_write_P(qmk_logo, false);
+// }
+
+void st7565_task_user(void) {
+    if (is_keyboard_master()) {
+        render_status(); // Renders the current keyboard state (layer, lock, caps, scroll, etc)
+    } else {
+        ergodox_infinity_lcd_color(0, 0, 0);
+        // render_logo();   // Renders a static logo
+        st7565_write_P(PSTR(QMK_VERSION "\n" LAYOUT_ergodox_VERSION), false);
+    }
+}
+
+#endif // ST7565_ENABLE

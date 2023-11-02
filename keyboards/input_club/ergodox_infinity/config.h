@@ -121,6 +121,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #    define ST7565_CONTRAST 22
 #    define ST7565_DISPLAY_WIDTH 128
 #    define ST7565_DISPLAY_HEIGHT 32
+#    define ST7565_UPDATE_INTERVAL 250
 
 /* SPI (for LCD) */
 #    define SPI_DRIVER SPID1
