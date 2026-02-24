@@ -20,6 +20,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // https://github.com/qmk/qmk_firmware/issues/19420#issuecomment-1372134274
 #define usb_lld_disconnect_bus(usbp) do {} while(0)
 
+/* Taken from https://github.com/qmk/qmk_firmware/issues/19420#issuecomment-3775315623*/
+#define EE_HANDS
+#define SPLIT_USB_DETECT
+#define SPLIT_USB_TIMEOUT 1000
+#define SPLIT_WATCHDOG_ENABLE
+#define SPLIT_WATCHDOG_TIMEOUT 2000
+#define NO_USB_STARTUP_CHECK
+#define USB_SUSPEND_WAKEUP_DELAY 200
+/***********************************/
+
 #define MOUSEKEY_INTERVAL       20
 #define MOUSEKEY_DELAY          0
 #define MOUSEKEY_TIME_TO_MAX    60
